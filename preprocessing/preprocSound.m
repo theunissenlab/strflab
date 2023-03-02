@@ -91,11 +91,17 @@ function [wholeStim, groupIndex, stimInfo, params] = preprocSound(audioWaveforms
         error('Unknown time-frequency representation type: %s\n', params.tfType);
     end
     
-
+    %% Find version of matlab 
+    Version_Matlab = version('-release'); Version_Matlab = str2num(Version_Matlab(1:4));
+    
     %% read .wav files if they're specified instead of audio waveforms
     for k = 1:length(audioWaveforms)        
         if ischar(audioWaveforms{k})
+            if Version_Matlab < 2015
             [adata, sRate, depth] = wavread(audioWaveforms{k});            
+            else 
+            [adata, sRate] = audioread(audioWaveforms{k});            
+            end 
             audioWaveforms{k} = adata;
             params.rawSampleRate = sRate;
         end        
